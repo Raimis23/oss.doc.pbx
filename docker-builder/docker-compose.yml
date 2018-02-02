@@ -1,21 +1,47 @@
-registry-srv:
-  image: registry:2
-  ports:
-    - 127.0.0.1:5000:5000
+version: '3'
+#------------------------------------------------------------------
+#
+#
+#             maintains image builder and pusher
+#
+#
+#------------------------------------------------------------------
+services:
+ buildbot:
+  image: 10.10.20.91:5043/ossnet/cd-flow:latest
   environment:
-    REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
-  volumes:
-    - ./data:/data
-  restart:
-    always
+    - GH_WEBHOOK_PORT=7070
+    - GITHUB_TOKEN=abdb43f51c88529df96243d3400e64579fcf910b
+    - LOCALREGISTRY=10.10.20.91:5043
 
-nginx:
-  image: "nginx:1.9"
+    - SETTINGS_smartmex.lt.ari_image=smartmex-ari
+    - SETTINGS_smartmex.lt.ari_docker-telia-ee_tag=latest
+
+    - SETTINGS_smartmex-web_image=smartmex-web
+    - SETTINGS_smartmex-web_docker_tag=latest
+
+    - SETTINGS_smartmex.lt.communicator.smpp_image=smartmex-sms
+    - SETTINGS_smartmex.lt.communicator.smpp_docker_tag=latest
+
+    - SETTINGS_smartmex.lt.core_image=smartmex-core
+    - SETTINGS_smartmex.lt.core_docker_tag=latest
+
+    - SETTINGS_smartmex.lt.prov_image=smartmex-prov
+    - SETTINGS_smartmex.lt.prov_docker_tag=latest
+
+    - SETTINGS_smartmex.lt.stats_image=smartmex-stats
+    - SETTINGS_smartmex.lt.stats_docker_tag=latest
+
+    - SETTINGS_smartmex.lt.storage.files_image=smartmex-files
+    - SETTINGS_smartmex.lt.storage.files_docker_tag=latest
+
+    - SETTINGS_smartmex.lt.storage.recorder_image=smartmex-recorder
+    - SETTINGS_smartmex.lt.storage.recorder_docker_tag=latest
+
+  volumes:
+    - ./docker_volumes/tmp:/tmp
+    - /var/run/docker.sock:/var/run/docker.sock
+
   ports:
-    - 5043:443
-  links:
-    - registry-srv:registry
-  volumes:
-    - ./nginx/:/etc/nginx/conf.d:ro
-
+    - "7070:7070"
 

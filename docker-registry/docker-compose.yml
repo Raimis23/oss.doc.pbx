@@ -17,3 +17,5 @@ nginx:
     - registry-srv:registry
   volumes:
     - ./nginx/:/etc/nginx/conf.d:ro
+
+
